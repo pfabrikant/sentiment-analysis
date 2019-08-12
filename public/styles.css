@@ -1,0 +1,31 @@
+.flex {
+    display: flex;
+}
+#slider {
+    background-image: linear-gradient(to right, #af1540, #a70053, #93006a, #6f0084, #0c0a9d);
+}
+textarea {
+    width: 80%;
+    height: 200px;
+    margin:0;
+    border-radius: 0;
+    overflow-y:auto;
+    background-color: transparent;
+}
+.backdrop {
+    overflow: auto;
+}
+
+.highlights {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: transparent;
+}
+mark.positive {
+    color: transparent;
+    background-color: #55D6BE;
+}
+mark.negative {
+    color: transparent;
+    background-color: #EF6F6C;
+}

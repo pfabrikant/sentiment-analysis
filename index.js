@@ -1,5 +1,5 @@
 const express = require('express');
-const {analyzeEntitiesOfText, analyzeSentimentOfText} = require ('./naturalLangApi');
+const {analyzeEntitySentimentOfText, analyzeSentimentOfText} = require ('./naturalLangApi');
 const app = express();
 const compression = require('compression');
 const bodyParser = require('body-parser');
@@ -33,11 +33,18 @@ if (process.env.NODE_ENV != 'production') {
 } else {
     app.use('/bundle.js', (req, res) => res.sendFile(`${__dirname}/bundle.js`));
 }
+app.use('/public/:fileName', (req,res)=>{
+    res.sendFile(__dirname+'/public/'+ req.params.fileName);
 
+});
 app.post('/submitText', (req,res)=>{
+    var results;
     analyzeSentimentOfText(req.body.text).then(data=>{
-        console.log("data returned from analyzeSentimentOfText: ", data);
-        res.json(data);
+        results=data;
+        return analyzeEntitySentimentOfText(req.body.text);
+    }).then (moreResults=>{
+        results.entitiesAnalysis=moreResults;
+        res.json(results);
     }).catch(err=>console.log("Error in POST /submitText: ",err.message));
 });
 
