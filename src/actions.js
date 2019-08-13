@@ -22,3 +22,16 @@ export function currentValueOfTextArea (val){
         val:val
     };
 }
+export function updateHighlightedText (string){
+    return {
+        type: "UPDATE_HIGHLIGHTED_TEXT",
+        text:string
+    };
+}
+export function updateRephrasing (id, arr){
+    return {
+        type:"UPDATE_REPHRASING",
+        sentences:arr,
+        id: id
+    };
+}

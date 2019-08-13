@@ -8,6 +8,8 @@ const cookieSessionMiddleware= cookieSession({
     secret: 'Death is part of life',
     maxAge: 1000 * 60 * 60 * 24 * 14
 });
+const {rephraseSentence} = require ('./src/lib/rephraser');
+const sanitizeHtml = require('sanitize-html');
 const cookieParser = require ('cookie-parser');
 const csurf = require ('csurf');
 app.use(cookieParser());
@@ -39,13 +41,22 @@ app.use('/public/:fileName', (req,res)=>{
 });
 app.post('/submitText', (req,res)=>{
     var results;
-    analyzeSentimentOfText(req.body.text).then(data=>{
+    const clean = sanitizeHtml(req.body.text);
+    analyzeSentimentOfText(clean).then(data=>{
         results=data;
         return analyzeEntitySentimentOfText(req.body.text);
     }).then (moreResults=>{
         results.entitiesAnalysis=moreResults;
         res.json(results);
     }).catch(err=>console.log("Error in POST /submitText: ",err.message));
+});
+app.post('/getRephrasing', (req,res)=>{
+    rephraseSentence(req.body.text).then(results=>{
+        return analyzeSentimentOfText(results.join(' ').replace( /,/g,''));
+    }).then(data=>{
+        let list = data.sentences.filter(sentence=>Math.abs(sentence.sentenceSentiment)<Math.abs(req.body.score));
+        res.json(list);
+    }).catch(err=>console.log("Error in POST /getRephrasing: ", err.message));
 });
 
 app.get('*', function(req, res) {

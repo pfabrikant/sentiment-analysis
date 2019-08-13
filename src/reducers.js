@@ -22,5 +22,15 @@ export function reducer (state={}, action){
             ...state, currValOfTextArea:action.val
         };
     }
+    if (action.type=="UPDATE_HIGHLIGHTED_TEXT"){
+        return {
+            ...state, highlightedText: action.text
+        };
+    }
+    if (action.type=="UPDATE_REPHRASING"){
+        return {
+            ...state, rephrasing: action.sentences, rephrasingId:action.id
+        };
+    }
     return {};
 }

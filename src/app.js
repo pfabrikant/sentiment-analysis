@@ -1,6 +1,6 @@
 import React, {useEffect, createRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {updateEvaluation, updateValueOfEvaluation, currentValueOfTextArea} from './actions';
+import {updateEvaluation, updateValueOfEvaluation, currentValueOfTextArea, updateHighlightedText, updateRephrasing} from './actions';
 import instance from './lib/axios';
 import Slider from 'react-input-slider';
 
@@ -11,12 +11,32 @@ export default function App (){
     const inputText = useSelector (state=>state&&state.currValOfTextArea);
     const textEvaluation = useSelector (state=>state&&state.evaluation);
     const valueOfEvaluation = useSelector (state=> state&&state.valueOfEvaluation);
-    var highlightedText;
+    const highlightedText = useSelector (state=> state&&state.highlightedText);
+    const rephrasing = useSelector (state=> state && state.rephrasing);
+    const rephrasingId = useSelector (state=> state&& state.rephrasingId);
+
+    var composeHighlightedText = function (){
+        let string= inputText.slice();
+        let positiveSentences =[];
+        let negativeSentences=[];
+        textEvaluation.sentences.map(sentence=>{
+            if (sentence.sentenceSentiment>0.15){
+                positiveSentences.push(sentence.sentenceText);
+            }
+            if (sentence.sentenceSentiment<-0.15){
+                negativeSentences.push(sentence.sentenceText);
+            }
+        });
+        positiveSentences.forEach(sentence=>string=string.replace(sentence,`<mark class="positive">${sentence}</mark>`));
+        negativeSentences.forEach(sentence=>string=string.replace(sentence,`<mark class="negative">${sentence}</mark>`));
+        dispatch(updateHighlightedText(string));
+    };
 
 
-    //calculating the general sentiment of the document by assesing both sentiment and magnitude of the document
+
     let valOfEv;
     useEffect(()=>{
+        //calculating the general sentiment of the document by assesing both sentiment and magnitude of the document
         if (textEvaluation){
             // if documentSentimentScore is close to 0
             if(Math.abs(textEvaluation.documentSentimentScore)<0.2){
@@ -33,41 +53,24 @@ export default function App (){
                     valOfEv= "clealry negative";
                 }
             }
+            dispatch(updateValueOfEvaluation(valOfEv));
+            // function that returns the `decorated`string for the background div to the textarea
+            composeHighlightedText();
         }
-        dispatch(updateValueOfEvaluation(valOfEv));
-        highlightedText= function (){
-            let string= inputText.slice();
-            let positiveSentences =[];
-            let negativeSentences=[];
-            textEvaluation.sentences.map(sentence=>{
-                if (sentence.sentenceSentiment>0.15){
-                    positiveSentences.push(sentence.sentenceText);
-                }
-                if (sentence.sentenceSentiment<-0.15){
-                    negativeSentences.push(sentence.sentenceText);
-                }
-            });
-            positiveSentences.forEach(sentence=>string.replace(sentence,`<mark className="positive">${sentence}</mark>`));
-            string.replace();
 
-        };
     },[textEvaluation]);
 
 
     function handleInput (e) {
         dispatch(currentValueOfTextArea(e.target.value));
-
-        //         highlightedText = applyHighlights(inputText);
-        //     }
-        //
-        //     function applyHighlights (text){
-        // if (!textEvaluation){
-        //         return text;
-        //     } else {
-        //
-        //     }
-
+        if (textEvaluation){
+            composeHighlightedText();
+        } else {
+            dispatch(updateHighlightedText(e.target.value));
+        }
     }
+
+
     function submitText (){
         instance.post('/submitText', {text:inputText}).then(({data})=>{
             dispatch(updateEvaluation(data));
@@ -79,15 +82,45 @@ export default function App (){
         const scrollTop = textArea.scrollTop();
         highlights.scrollTop(scrollTop);
     }
+
+    function handleClick (e){
+        if (inputText){
+            e.preventDefault();
+            let start = e.target.selectionStart;
+            let sample= inputText.slice(start, start+6);
+            if (textEvaluation){
+                textEvaluation.sentences.map(sentence=>{
+                    if(sentence.sentenceText.includes(sample)){
+                        instance.post('/getRephrasing', {text:sentence.sentenceText, score:sentence.sentenceSentiment}).then(({data})=>{
+                            dispatch(updateRephrasing(sentence.sentenceId,data));
+                        }).catch(err=>console.log("Error in handleClick: ",err.message));
+                    }
+                });
+            }
+        }
+    }
+    function insertRephrase(text){
+        let sentenceToReplace= textEvaluation.sentences.filter(sentence=>sentence.sentenceId==rephrasingId)[0].sentenceText;
+        let newInputText= inputText.replace(sentenceToReplace,text);
+        dispatch(currentValueOfTextArea(newInputText));
+        composeHighlightedText();
+        dispatch(updateRephrasing(null, null));
+    }
     return (
         <div>
             <h1>SentimentApp</h1>
             <div className="container">
                 <div className="backdrop">
-                    <div className="highlights" ref={highlights}>{highlightedText}
+                    <div className="highlights" ref={highlights} dangerouslySetInnerHTML={{__html:highlightedText}}>
                     </div>
                 </div>
-                <textarea onChange={e=>handleInput(e)} onScroll={handleScroll} ref={textArea} data-gramm_editor="false"></textarea>
+                <textarea onChange={e=>handleInput(e)} onScroll={handleScroll} onClick={e=>handleClick(e)} ref={textArea} value={inputText} data-gramm_editor="false"></textarea>
+                {rephrasing && rephrasing.length>0 &&<div className="rephrasing"> <span onClick={()=>dispatch(updateRephrasing(null, null))}>X</span>
+                    {rephrasing.map(sentence=>{
+                        return (<p onClick={()=>insertRephrase(sentence.sentenceText)} key={sentence.sentenceId}> {sentence.sentenceText} </p>);
+                    })
+                    }
+                </div>}
             </div>
             <button onClick={submitText}>Submit text</button>
             {textEvaluation&&
