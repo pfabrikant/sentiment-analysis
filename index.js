@@ -2,6 +2,8 @@ const express = require('express');
 const {analyzeEntitySentimentOfText, analyzeSentimentOfText} = require ('./naturalLangApi');
 const app = express();
 const compression = require('compression');
+const bc = require('./src/lib/bcrypt');
+const db = require('./src/lib/dataBase');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const cookieSessionMiddleware= cookieSession({
@@ -39,11 +41,18 @@ app.use('/public/:fileName', (req,res)=>{
     res.sendFile(__dirname+'/public/'+ req.params.fileName);
 
 });
+
+
 app.post('/submitText', (req,res)=>{
     var results;
     const clean = sanitizeHtml(req.body.text);
     analyzeSentimentOfText(clean).then(data=>{
         results=data;
+        if (req.session.loginId){
+            db.updateHistory(req.session.loginId,clean, Number(results.documentSentimentScore)).then(()=>{
+
+            }).catch(err=>console.log("Error in db.updatehistory in POST /submitText: ",err.message));
+        }
         return analyzeEntitySentimentOfText(req.body.text);
     }).then (moreResults=>{
         results.entitiesAnalysis=moreResults;
@@ -57,6 +66,52 @@ app.post('/getRephrasing', (req,res)=>{
         let list = data.sentences.filter(sentence=>Math.abs(sentence.sentenceSentiment)<Math.abs(req.body.score));
         res.json(list);
     }).catch(err=>console.log("Error in POST /getRephrasing: ", err.message));
+});
+
+app.post('/register', (req,res)=>{
+    bc.getHash(req.body.password).then((hash) => {
+        return db.insertUser(req.body.username, req.body.email, hash);
+    }).then(({rows}) => {
+        req.session.loginId = rows[0].id;
+        req.session.username= req.body.username;
+        res.json({loggedIn:true,
+            userId:rows[0].id });
+    }).catch(err=>{
+        console.log('error in POST /register: ', err.message);
+        res.json({loggedIn:false});
+    });
+});
+
+app.post('/login', (req, res) => {
+    let idInQuestion;
+    console.log(req.body.username);
+    db.getPassword(req.body.username).then(({rows}) => {
+
+        idInQuestion = rows[0].id;
+        return bc.compareHash(req.body.password, rows[0].password);
+    }).then(() => {
+        req.session.loginId =idInQuestion;
+        req.session.username= req.body.username;
+        res.json({loggedIn:true,
+            userId:idInQuestion
+        });
+
+    }).catch((err) => {
+        console.log('Error in POST /login route: ', err.message);
+        res.json({loggedIn:false});
+    });
+});
+
+app.get('/id', (req,res)=>{
+    if (req.session.loginId){
+        res.json({id:req.session.loginId, username:req.session.username});
+    }
+});
+
+app.get('/getHistory/:id', (req,res)=>{
+    db.getHistory(req.params.id).then(({rows})=>{
+        res.json(rows);
+    }).catch(err=>console.log("Error in GET /getHistory: ", err.message));
 });
 
 app.get('*', function(req, res) {

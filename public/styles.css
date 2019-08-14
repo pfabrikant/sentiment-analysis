@@ -69,3 +69,29 @@ p mark.negative {
     font-size: 20px;
 
 }
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+.navbar {
+    display: flex;
+    justify-content: space-around;
+}
+.registration {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.analysis-request {
+    display:flex;
+    justify-content: space-between;
+}
+.analysis-request mark {
+    width: 100%;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+}
+.ref {
+    height: 1px;
+}

@@ -32,5 +32,40 @@ export function reducer (state={}, action){
             ...state, rephrasing: action.sentences, rephrasingId:action.id
         };
     }
+    if (action.type=="LOGIN"){
+        return {
+            ...state, login:action.bool
+        };
+    }
+    if (action.type=="REGISTER"){
+        return {
+            ...state, register:action.bool
+        };
+    }
+    if (action.type=="LOGIN_ID"){
+        return {
+            ...state, logInId:action.id
+        };
+    }
+    if (action.type=="GET_HISTORY"){
+        return {
+            ...state, getHistory:action.bool
+        };
+    }
+    if (action.type=="UPDATE_LOGIN_ID"){
+        return {
+            ...state, logInId:action.id
+        };
+    }
+    if (action.type=="UPDATE_USERNAME"){
+        return {
+            ...state, userName:action.username
+        };
+    }
+    if (action.type=="UPDATE_HISTORY"){
+        return {
+            ...state, history:action.history
+        };
+    }
     return {};
 }
