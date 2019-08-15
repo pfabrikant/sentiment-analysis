@@ -63,6 +63,14 @@ export function Main (){
         }
 
     },[textEvaluation]);
+    // scrollintoview for sentences detailed analysis
+    useEffect (()=>{
+        sentencesDetailedResultsRef.current&&sentencesDetailedResultsRef.current.scrollIntoView({behavior:'smooth', block:"end"});
+    },[sentencesDetailedResultsRef]);
+    //scrollintoview for entities detailed analysis
+    useEffect (()=>{
+        entitiesDetailedResultsRef.current&&entitiesDetailedResultsRef.current.scrollIntoView({behavior:'smooth', block:"end"});
+    },[entitiesDetailedResultsRef]);
 
     // upon change of the textarea
     function handleInput (e) {
@@ -74,18 +82,27 @@ export function Main (){
         }
     }
 
+
     // upon click on the submit button
-    function submitText (){
-        instance.post('/submitText', {text:inputText}).then(({data})=>{
+    function submitText (text){
+        instance.post('/submitText', {text:text}).then(({data})=>{
             dispatch(updateEvaluation(data));
         });
+        textArea.current.scrollTop=0;
         setSentencesDetailedResults(false);
         setEntitiesDetailedResults(false);
     }
+    // submit using the enter key
+    function inputKeyDown (e){
+        if (e.keyCode==13){
+            submitText(inputText);
+        }
+        textArea.current.scrollTop=0;
+    }
     // align textarea and highlights div upon scrolling
     function handleScroll (){
-        const scrollTop = textArea.scrollTop();
-        highlights.scrollTop(scrollTop);
+        const scrollTop = textArea.current.scrollTop;
+        highlights.current.scrollTop = scrollTop;
     }
     // upon click on a highlighted sentence in the textarea
     function handleClick (e){
@@ -109,24 +126,40 @@ export function Main (){
         let sentenceToReplace= textEvaluation.sentences.filter(sentence=>sentence.sentenceId==rephrasingId)[0].sentenceText;
         let newInputText= inputText.replace(sentenceToReplace,text);
         dispatch(currentValueOfTextArea(newInputText));
-        composeHighlightedText();
         dispatch(updateRephrasing(null, null));
+        submitText (newInputText);
     }
 
-    function openDetails (bool){
-        setSentencesDetailedResults(bool);
-        sentencesDetailedResultsRef.current&&sentencesDetailedResultsRef.current.scrollIntoView({behavior:'smooth'});
-    }
+
 
     return (
-        <div>
+        <div className="center">
             <div className="container">
-                <div className="backdrop">
-                    <div className="highlights" ref={highlights} dangerouslySetInnerHTML={{__html:highlightedText}}>
-                    </div>
+
+                <div className="highlights" ref={highlights} dangerouslySetInnerHTML={{__html:highlightedText}}>
                 </div>
-                <textarea onChange={e=>handleInput(e)} onScroll={handleScroll} onClick={e=>handleClick(e)} ref={textArea} value={inputText} data-gramm_editor="false"></textarea>
+
+                <textarea onChange={e=>handleInput(e)} onScroll={handleScroll} onClick={e=>handleClick(e)} onKeyDown={e=>inputKeyDown(e)} ref={textArea} value={inputText} data-gramm_editor="false"></textarea>
                 {rephrasing && rephrasing.length>0 &&<div className="rephrasing"> <span onClick={()=>dispatch(updateRephrasing(null, null))}>X</span>
+                    <h3>The sentiment score of the chosen sentence is {textEvaluation.sentences[rephrasingId-1].sentenceSentiment}</h3>
+                    <Slider id="slider"
+                        axis="x"
+                        x={textEvaluation.sentences[rephrasingId-1].sentenceSentiment}
+                        xmax={1} xmin={-1} disabled={true} xstep={2} styles={{
+                            active: {
+                                backgroundColor: 'transparent'
+                            },
+                            thumb: {
+                                width: 10,
+                                height: 10,
+                                opacity: 1
+                            },
+                            disabled: {
+                                opacity: 1
+                            }
+                        }}
+                    />
+                    <h4> Here are a few rephrasings of the chosen sentence with a more neutral sentiment score:</h4>
                     {rephrasing.map(sentence=>{
                         return (<p onClick={()=>insertRephrase(sentence.sentenceText)} key={sentence.sentenceId}> {sentence.sentenceText
                         } </p>);
@@ -134,10 +167,16 @@ export function Main (){
                     }
                 </div>}
             </div>
-            <button onClick={submitText}>Submit text</button>
+            <div className="submit">
+                <button onClick={()=>submitText(inputText)}>Submit text</button>
+            </div>
+
+
+
+
             {textEvaluation&&
         <div className="resultsDiv">
-            <h2> Your text appears to have a {valueOfEvaluation} sentiment </h2>
+            <h2>Your text appears to have a {valueOfEvaluation} sentiment</h2>
             <div className="flex">  <h3> Negative </h3><Slider id="slider"
                 axis="x"
                 x={textEvaluation.documentSentimentScore}
@@ -156,13 +195,23 @@ export function Main (){
                 }}
             /> <h3> positive </h3> </div>
 
-            <button onClick={()=>openDetails(true)}>Detailed information about the text and selected sentences</button>
 
-            <button onClick={()=>{setEntitiesDetailedResults(true);
-                entitiesDetailedResultsRef.current && entitiesDetailedResultsRef.current.scrollIntoView({behavior:'smooth'});
-            }}>Detailed information about selected entities from your text</button>
-            {sentencesDetailedResults&& <React.Fragment>
-                <h3> The overall sentiment score of the text is {textEvaluation.documentSentimentScore} [range between -1 (very negative) and 1 (very positive)] while the overall magnitude (emotional intensity) of your text is {textEvaluation.documentSentimentMagnitude} [relative to the document&apos;s length]</h3>
+
+
+            <div className="more">
+                <h4> Would you like a more detailed analysis of the sentences and entities in your text?</h4>
+                <div className="detailed-information"><button onClick={()=>setSentencesDetailedResults(true)}>Text and Sentences</button>
+                    <button onClick={()=>{setEntitiesDetailedResults(true);
+                        entitiesDetailedResultsRef.current && entitiesDetailedResultsRef.current.scrollIntoView({behavior:'smooth'});
+                    }}>Entities</button>
+                </div>
+            </div>
+
+
+
+            {sentencesDetailedResults&& <div className="details">
+                <h3>Overall Sentiment</h3>
+                <p> The overall sentiment score of the text is {textEvaluation.documentSentimentScore} [range between -1 (very negative) and 1 (very positive)] while the overall magnitude (emotional intensity) of your text is {textEvaluation.documentSentimentMagnitude} [relative to the document&apos;s length]</p>
                 <h3>Sentences that have a particularly high or low sentiment score:</h3>
                 {textEvaluation.sentences.map(sentence=>{
                     if (sentence.sentenceSentiment<-0.15){
@@ -172,7 +221,7 @@ export function Main (){
                     } else { return; }
                 })}
                 <div className="ref" ref={sentencesDetailedResultsRef}></div>
-            </React.Fragment>}
+            </div>}
             {entitiesDetailedResults&& <React.Fragment>
                 <h3> Relevant nouns in the text that have a particularly high or low sentiment score:</h3>
                 {textEvaluation.entitiesAnalysis&&

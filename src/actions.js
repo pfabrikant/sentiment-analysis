@@ -35,30 +35,15 @@ export function updateRephrasing (id, arr){
         id: id
     };
 }
-export function login (bool){
-    return {
-        type:"LOGIN",
-        bool:bool
-    };
-}
-export function register (bool){
-    return {
-        type:"REGISTER",
-        bool:bool
-    };
-}
+
 export function logInId (int){
     return {
         type:"LOGIN_ID",
         id:int
     };
 }
-export function getHistory (bool){
-    return {
-        type:"GET_HISTORY",
-        bool:bool
-    };
-}
+
+
 export function updateLogInId (int){
     return {
         type:"UPDATE_LOGIN_ID",

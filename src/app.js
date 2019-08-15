@@ -5,6 +5,7 @@ import {Header} from './header';
 import {Main} from './main';
 import {Login, Register} from './registration';
 import {History} from './history';
+import {About} from './about';
 import instance from './lib/axios';
 import {useDispatch} from 'react-redux';
 import {updateLogInId, updateUsername} from './actions';
@@ -21,14 +22,16 @@ export default function App (){
         }).catch(err=>console.log("Error in useEffect in App: ", err.message));
     },[]);
     return (
-        <div>
+        <div className="body">
             <BrowserRouter>
-                <Header />
+                <Route path='*' component={Header}/>
                 <Route exact path="/" component={Main}/>
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/register" component={Register}/>
                 <Route exact path="/history" component={History}/>
+                <Route exact path="/about" component={About}/>
             </BrowserRouter>
+            <footer><p>© <a href="https://github.com/pfabrikant">Eli Fabrikant</a> - 2019. Powered by Google&apos;s <a href="https://cloud.google.com/natural-language/">Natural Language API</a> and <a href="https://cloud.google.com/translate/">Translation API</a>.</p></footer>
         </div>
 
     );

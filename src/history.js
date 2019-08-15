@@ -18,24 +18,24 @@ export function History (){
         }
     },[id]);
     return (<div className="history">
-        {getHistory&& <React.Fragment> <h2>Here are your latest sentiment analysis requests, {userName}:</h2>
-            <div className="sentim-analysis-requests">
-                {history&&history.map(obj=>{
-                    if (obj.sentiment>0.2){
-                        return (<div className="analysis-request" key={obj.id}>
-                            <mark className="positive"><h3>{obj.sentiment}</h3>
-                                <h4>{obj.input_text}</h4></mark> </div>);
-                    } else if (obj.sentiment<-0.2){
-                        return (<div className="analysis-request" key={obj.id}>
-                            <mark className="negative"><h3>{obj.sentiment}</h3>
-                                <h4>{obj.input_text}</h4></mark> </div>);
-                    } else {
-                        return (<div className="analysis-request" key={obj.id}>
-                            <h3>{obj.sentiment}</h3>
-                            <h4>{obj.input_text}</h4> </div>);
-                    }
-                })}
-            </div>
-        </React.Fragment>}
+        <h2>Here are your latest sentiment analysis requests, {userName}:</h2>
+        <div className="sentim-analysis-requests">
+            {history&&history.map(obj=>{
+                if (obj.sentiment>0.2){
+                    return (<div className="analysis-request" key={obj.id}>
+                        <mark className="positive"><h3>{obj.sentiment}</h3>
+                            <h4>{obj.input_text}</h4></mark> </div>);
+                } else if (obj.sentiment<-0.2){
+                    return (<div className="analysis-request" key={obj.id}>
+                        <mark className="negative"><h3>{obj.sentiment}</h3>
+                            <h4>{obj.input_text}</h4></mark> </div>);
+                } else {
+                    return (<div className="analysis-request" key={obj.id}>
+                        <h3>{obj.sentiment}</h3>
+                        <h4>{obj.input_text}</h4> </div>);
+                }
+            })}
+        </div>
+    
     </div>);
 }

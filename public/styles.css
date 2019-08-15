@@ -1,5 +1,19 @@
+h1, h2, h3, h4, h5, p, div, button, input, textarea {
+    font-family: 'Monda', sans-serif;
+    outline: none;
+}
+
 .flex {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top:-39px;
+}
+.flex h3 {
+    padding: 10px;
+}
+.resultsDiv h2 {
+    text-align: center;
 }
 #slider {
     background-image: linear-gradient(to right, #af1540, #a70053, #93006a, #6f0084, #0c0a9d);
@@ -7,7 +21,7 @@
 textarea {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 10%;
     z-index: 100;
     width: 80%;
     height: 200px;
@@ -17,16 +31,25 @@ textarea {
     background-color: transparent;
     font-size: inherit;
     font-family: inherit;
+    cursor: default;
+    border: 1px black solid;
+    font-size: 0.9em;
+    font-family: 'Monda', sans-serif;
 }
-.backdrop {
+/* .backdrop {
     overflow: auto;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width:80%;
-}
+
+} */
 
 .highlights {
+    position: absolute;
+    margin:0;
+    border-radius: 0;
+    top: 0;
+    left: 10%;
+    width:80%;
+    height: 200px;
+    border-width: 1px;
     white-space: pre-wrap;
     word-wrap: break-word;
     color: transparent;
@@ -35,10 +58,14 @@ textarea {
     border: 1px;
     padding: 2px;
     overflow-y:auto;
+    border: 1px black solid;
+    font-size: 0.9em;
+    font-family: 'Monda', sans-serif;
 }
 mark.positive {
     color: transparent;
     background-color: #55D6BE;
+
 }
 mark.negative {
     color: transparent;
@@ -47,6 +74,7 @@ mark.negative {
 .container {
     position: relative;
     height: 200px;
+
 }
 p mark.positive {
     color: black;
@@ -72,10 +100,12 @@ p mark.negative {
 .header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
 }
 .navbar {
     display: flex;
     justify-content: space-around;
+    align-items: center;
 }
 .registration {
     display: flex;
@@ -94,4 +124,73 @@ p mark.negative {
 }
 .ref {
     height: 1px;
+}
+.header a, .navbar a {
+    text-decoration: none;
+    color: black;
+
+}
+.header a h4, .navbar a h4 {
+    font-size: 0.8em;
+    padding: 0px 8px 0px 8px;
+}
+.logo h2 {
+    margin-top:5px;
+}
+.center {
+
+    margin-top: 15px;
+}
+.center button {
+    width:86px;
+margin: auto;
+margin-top: 15px;
+
+
+}
+
+footer p {
+    font-size: 0.7em;
+    text-align: center;
+}
+footer p a {
+    color: black;
+}
+.body {
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 30px;
+
+}
+footer {
+    position: absolute;
+    left: 0;
+    right:0;
+    bottom:0;
+    height: 30px;
+    width: 100%;
+    margin: auto;
+/
+}
+.submit {
+    display: flex;
+    justify-content: center;
+}
+.more {
+    text-align: center;
+    margin-top:-5px;
+}
+.detailed-information{
+    margin-top: -25px;
+}
+.detailed-information button {
+    width: 150px;
+    margin: 10px;
+}
+.details h3,  .details p {
+    text-align: center;
+}
+.details h3 {
+    text-decoration: underline;
+    margin-bottom: -5px;
 }

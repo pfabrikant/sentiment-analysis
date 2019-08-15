@@ -1,32 +1,26 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {login, register, logInId, getHistory, updateHistory, updateUsername} from './actions';
+import {logInId, updateHistory, updateUsername, } from './actions';
 import {Link} from 'react-router-dom';
-export function Header (){
-    const userName = useSelector (state=>state&&state.userName);
-    const loggedIn = useSelector (state=>state&&state.logInId);
-    const openLogIn = useSelector (state=>state&&state.login);
-    const openRegistration = useSelector (state=> state&&state.register);
-    const history = useSelector (state=> state&&state.getHistory);
-    const dispatch = useDispatch();
 
+export function Header (params){
+    const loggedIn = useSelector (state=>state&&state.logInId);
+    const dispatch = useDispatch();
     return (<div className="header">
-        <Link to="/"><div className="logo" onClick={()=>dispatch(getHistory(false))}><h2>SentiMapp</h2></div></Link>
+        <Link to="/"><div className="logo"><h2>sentiMapp</h2></div></Link>
         <div className="navbar">
-            {!loggedIn&& !openLogIn&& !openRegistration && <React.Fragment><Link to="/login"><h4 onClick={()=>dispatch(login(true))}>login |</h4></Link>
-                <Link to="/register"><h4 onClick={()=>dispatch(register(true))}>| register </h4></Link></React.Fragment>
+            {!loggedIn&& <React.Fragment><Link to="/login"><h4 >login </h4></Link>
+                <Link to="/register"><h4> register </h4></Link></React.Fragment>
             }
+            {params.match.url!='/'&&<Link to="/"><h4 > Sentiment Analysis </h4></Link>}
+            {params.match.url!='/about'&&<Link to="/about"><h4 >  About </h4></Link>}
             {loggedIn&& <React.Fragment>
-                {!history&& <Link to="/history"><h4 onClick={()=>dispatch(getHistory(true))}>{userName}&apos;s SentiMapp history |</h4></Link>}
-                {history&& <Link to="/"><h4 onClick={()=>dispatch(getHistory(false))}> Sentiment Analysis |</h4></Link>}
-                <h4 onClick={()=>{
-                    dispatch(login(false));
+                {params.match.url!='/history'&&<Link to="/history"><h4 > My History </h4></Link>}
+                <Link to="/"><h4 onClick={()=>{
                     dispatch(logInId(null));
-                    dispatch(register(false));
-                    dispatch(getHistory(false));
                     dispatch(updateHistory(null));
                     dispatch(updateUsername(null));
-                }}>| logout</h4> </React.Fragment>}
+                }}> logout</h4> </Link></React.Fragment>}
         </div>
     </div>);
 }
