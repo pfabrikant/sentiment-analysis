@@ -1,6 +1,19 @@
+
+html {
+  background: url(./background.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 h1, h2, h3, h4, h5, p, div, button, input, textarea {
     font-family: 'Monda', sans-serif;
     outline: none;
+    font-size: 1.1em;
+}
+button, textarea {
+    box-shadow: 6px 6px 12px 0px rgba(0,0,0,0.75);
+        border: 1px rgba(11, 9, 176,0.5) solid;
 }
 
 .flex {
@@ -11,12 +24,18 @@ h1, h2, h3, h4, h5, p, div, button, input, textarea {
 }
 .flex h3 {
     padding: 10px;
+    font-size: 0.8em;
+}
+.resultsDiv {
+    margin-top: 45px;
 }
 .resultsDiv h2 {
     text-align: center;
+    font-size: 1.2em;
 }
 #slider {
-    background-image: linear-gradient(to right, #af1540, #a70053, #93006a, #6f0084, #0c0a9d);
+opacity:0.5;
+    background-image: linear-gradient(to right, #bd0437, #a70053, #93006a, #6f0084, #0b09b0);
 }
 textarea {
     position: absolute;
@@ -32,7 +51,7 @@ textarea {
     font-size: inherit;
     font-family: inherit;
     cursor: default;
-    border: 1px black solid;
+
     font-size: 0.9em;
     font-family: 'Monda', sans-serif;
 }
@@ -64,12 +83,15 @@ textarea {
 }
 mark.positive {
     color: transparent;
-    background-color: #55D6BE;
+    /* background-color: #55D6BE; */
+    background-color: rgba(11, 9, 176,0.2);
+
 
 }
 mark.negative {
     color: transparent;
-    background-color: #EF6F6C;
+    background-color: rgba(189, 4, 55,0.2);
+    /* background-color: #EF6F6C; */
 }
 .container {
     position: relative;
@@ -84,17 +106,45 @@ p mark.negative {
 }
 .rephrasing {
     position: absolute;
-    top: 20%;
-    left:20%;
-    width: 50%;
+    top: 180px;
+    left:15%;
+    width: 70%;
     z-index: 200;
     background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
 }
+.rephrasing h3, .rephrasing h4 {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 1em;
+    margin-left: 5%;
+    margin-right: 5%;
+
+}
+.rephrasing h3 {
+    margin-top: 5px;
+}
+.rephrasing p {
+    font-size: 0.7em;
+    margin-left: 5%;
+    margin-right: 5%;
+    text-align: center;
+    border-bottom: 1px solid black;
+    cursor: default;
+    margin-top: -5px;
+    margin-bottom: -5px;
+
+}
+
 .rephrasing span {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 20px;
+    font-size: 25px;
 
 }
 .header {
@@ -113,21 +163,37 @@ p mark.negative {
     justify-content: center;
 }
 .analysis-request {
-    display:flex;
-    justify-content: space-between;
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+
+    border-bottom: 1px black solid;
 }
 .analysis-request mark {
     width: 100%;
     color: black;
-    display: flex;
-    justify-content: space-between;
+
 }
+.analysis-request mark h4 {
+    font-size: 0.7em;
+    padding-left: 5px;
+}
+.analysis-request mark h3 {
+    font-size: 0.7em;
+}
+.analysis-request h4 {
+    font-size: 0.7em;
+    padding-left: 5px;
+}
+.analysis-request  h3 {
+    font-size: 0.7em;
+}
+
 .ref {
     height: 1px;
 }
 .header a, .navbar a {
     text-decoration: none;
-    color: black;
+    color: rgba(11, 9, 176,0.7)
 
 }
 .header a h4, .navbar a h4 {
@@ -135,41 +201,51 @@ p mark.negative {
     padding: 0px 8px 0px 8px;
 }
 .logo h2 {
-    margin-top:5px;
+    margin-top:10px;
+    font-size: 1.5em;
+    margin-left: 5px;
+    color: rgba(11, 9, 176,0.7);
+}
+.logo h2 span {
+    color: rgba(189, 4, 55,0.7);
 }
 .center {
 
-    margin-top: 15px;
+    margin-top: 88px;
 }
-.center button {
-    width:86px;
+.center .submit button {
+    width:135px;
 margin: auto;
-margin-top: 15px;
+margin-top: 32px;
+font-size: 0.7em;
 
 
 }
 
 footer p {
-    font-size: 0.7em;
+    font-size: 0.8em;
     text-align: center;
+    margin-top: 40px;
 }
 footer p a {
     color: black;
 }
 .body {
-    min-height: 100vh;
+    min-height: 95vh;
     position: relative;
-    padding-bottom: 30px;
+
 
 }
 footer {
-    position: absolute;
+    /* position: absolute;
     left: 0;
     right:0;
-    bottom:0;
+    bottom:0; */
     height: 30px;
     width: 100%;
     margin: auto;
+    margin-top:5px;
+
 /
 }
 .submit {
@@ -182,15 +258,91 @@ footer {
 }
 .detailed-information{
     margin-top: -25px;
+    margin-bottom:25px;
 }
 .detailed-information button {
-    width: 150px;
+    width: 210px;
     margin: 10px;
+        font-size: 0.6em;
+
 }
 .details h3,  .details p {
     text-align: center;
+    font-size: 0.8em;
 }
 .details h3 {
     text-decoration: underline;
     margin-bottom: -5px;
+}
+
+.more h4 {
+    font-size: 0.9em;
+}
+.registration {
+margin-top: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.registration h2 {
+    font-size: 1.3em;
+}
+
+
+.registration input {
+    margin-top: 10px;
+    width: 30%;
+    font-size: 0.9em;
+    text-align: center;
+}
+.registration button {
+    margin-top: 45px;
+    margin-bottom: -5px;
+    width: 15%;
+    font-size: 0.8em;
+    text-align: center;
+
+}
+.registration a {
+    color: black;
+
+    font-size: 0.8em;
+}
+.history {
+    text-align: center;
+}
+.history h2 {
+    font-size: 1.3em;
+    text-decoration: underline;
+}
+.sentim-analysis-requests {
+    width: 90%;
+    border: 1px solid black;
+    margin: auto;
+}
+.flexit {
+    width: 90%;
+    display: flex;
+    justify-content: space-around;
+}
+.flexit h4 {
+    font-size: 0.9em;
+    margin-bottom: 4px;
+}
+.about h2 {
+    text-align: center;
+    font-size: 1.4em;
+    text-decoration: underline;
+    margin-bottom: 50px;
+    margin-top:40px;
+
+}
+.about p {
+    font-size: 0.7em;
+}
+.about h5 {
+    margin-bottom: 10px;
+    margin-top: 10px;
 }

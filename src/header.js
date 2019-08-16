@@ -7,7 +7,7 @@ export function Header (params){
     const loggedIn = useSelector (state=>state&&state.logInId);
     const dispatch = useDispatch();
     return (<div className="header">
-        <Link to="/"><div className="logo"><h2>sentiMapp</h2></div></Link>
+        <Link to="/"><div className="logo"><h2>senti<span>M</span>app</h2></div></Link>
         <div className="navbar">
             {!loggedIn&& <React.Fragment><Link to="/login"><h4 >login </h4></Link>
                 <Link to="/register"><h4> register </h4></Link></React.Fragment>

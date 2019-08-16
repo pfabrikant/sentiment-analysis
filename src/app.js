@@ -22,16 +22,18 @@ export default function App (){
         }).catch(err=>console.log("Error in useEffect in App: ", err.message));
     },[]);
     return (
-        <div className="body">
-            <BrowserRouter>
-                <Route path='*' component={Header}/>
-                <Route exact path="/" component={Main}/>
-                <Route exact path="/login" component={Login}/>
-                <Route exact path="/register" component={Register}/>
-                <Route exact path="/history" component={History}/>
-                <Route exact path="/about" component={About}/>
-            </BrowserRouter>
-            <footer><p>© <a href="https://github.com/pfabrikant">Eli Fabrikant</a> - 2019. Powered by Google&apos;s <a href="https://cloud.google.com/natural-language/">Natural Language API</a> and <a href="https://cloud.google.com/translate/">Translation API</a>.</p></footer>
+        <div className="html">
+            <div className="body">
+                <BrowserRouter>
+                    <Route path='*' component={Header}/>
+                    <Route exact path="/" component={Main}/>
+                    <Route exact path="/login" component={Login}/>
+                    <Route exact path="/register" component={Register}/>
+                    <Route exact path="/history" component={History}/>
+                    <Route exact path="/about" component={About}/>
+                </BrowserRouter>
+            </div>
+            <footer><p>© <a href="https://github.com/pfabrikant">Eli Fabrikant</a> - 2019. Powered by Google&apos;s <a href="https://cloud.google.com/natural-language/">Natural Language API</a> and <a href="https://cloud.google.com/translate/">Translation API</a>.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Background Photo by <a href="https://www.instagram.com/knownasovan/"> OVAN </a></p></footer>
         </div>
 
     );

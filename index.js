@@ -113,11 +113,14 @@ app.get('/getHistory/:id', (req,res)=>{
         res.json(rows);
     }).catch(err=>console.log("Error in GET /getHistory: ", err.message));
 });
+app.get('/public/:filename', (req,res)=>{
+    res.sendFile(__dirname + '/public'+req.params.filename);
+});
 
 app.get('*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(8080, function() {
+app.listen(process.env.PORT || 8080, function() {
     console.log("I'm listening.");
 });

@@ -77,7 +77,7 @@ export function Login (){
         return <Redirect to='/'/>;
     } else {
         return (<div className="registration">
-            <h3> Login </h3>
+            <h2> Log in </h2>
 
             {serverError&&<h3 className="error">There was a problem with the login. Please try again!</h3>}
             <input onChange={e=>setUsername(e.target.value)} type="text" name="username" placeholder="username"/>

@@ -7,8 +7,8 @@ import Slider from 'react-input-slider';
 export function Main (){
     const dispatch= useDispatch();
     const highlights = createRef();
-    const sentencesDetailedResultsRef = createRef();
-    const entitiesDetailedResultsRef = createRef();
+    let sentencesDetailedResultsRef= createRef();
+    let entitiesDetailedResultsRef= createRef();
     const textArea = createRef();
     const inputText = useSelector (state=>state&&state.currValOfTextArea);
     const textEvaluation = useSelector (state=>state&&state.evaluation);
@@ -18,6 +18,8 @@ export function Main (){
     const rephrasingId = useSelector (state=> state&& state.rephrasingId);
     const [sentencesDetailedResults, setSentencesDetailedResults]= useState();
     const [entitiesDetailedResults, setEntitiesDetailedResults]= useState();
+
+
 
     var composeHighlightedText = function (){
         let string= inputText.slice();
@@ -61,6 +63,7 @@ export function Main (){
             // function that returns the `decorated`string for the background div to the textarea
             composeHighlightedText();
         }
+
 
     },[textEvaluation]);
     // scrollintoview for sentences detailed analysis
@@ -134,6 +137,7 @@ export function Main (){
 
     return (
         <div className="center">
+
             <div className="container">
 
                 <div className="highlights" ref={highlights} dangerouslySetInnerHTML={{__html:highlightedText}}>
@@ -159,12 +163,14 @@ export function Main (){
                             }
                         }}
                     />
-                    <h4> Here are a few rephrasings of the chosen sentence with a more neutral sentiment score:</h4>
-                    {rephrasing.map(sentence=>{
-                        return (<p onClick={()=>insertRephrase(sentence.sentenceText)} key={sentence.sentenceId}> {sentence.sentenceText
-                        } </p>);
-                    })
-                    }
+                    <h4> A selection of rephrasings with a more neutral sentiment score:</h4>
+                    <div className="alternatives">
+                        {rephrasing.map(sentence=>{
+                            return (<p onClick={()=>insertRephrase(sentence.sentenceText)} key={sentence.sentenceId}> {sentence.sentenceText
+                            } </p>);
+                        })
+                        }
+                    </div>
                 </div>}
             </div>
             <div className="submit">
@@ -177,7 +183,7 @@ export function Main (){
             {textEvaluation&&
         <div className="resultsDiv">
             <h2>Your text appears to have a {valueOfEvaluation} sentiment</h2>
-            <div className="flex">  <h3> Negative </h3><Slider id="slider"
+            <div className="flex">  <h3> negative </h3><Slider id="slider"
                 axis="x"
                 x={textEvaluation.documentSentimentScore}
                 xmax={1} xmin={-1} disabled={true} xstep={2} styles={{
@@ -201,9 +207,9 @@ export function Main (){
             <div className="more">
                 <h4> Would you like a more detailed analysis of the sentences and entities in your text?</h4>
                 <div className="detailed-information"><button onClick={()=>setSentencesDetailedResults(true)}>Text and Sentences</button>
-                    <button onClick={()=>{setEntitiesDetailedResults(true);
+                    {textEvaluation.entitiesAnalysis.length>0&&<button onClick={()=>{setEntitiesDetailedResults(true);
                         entitiesDetailedResultsRef.current && entitiesDetailedResultsRef.current.scrollIntoView({behavior:'smooth'});
-                    }}>Entities</button>
+                    }}>Entities</button>}
                 </div>
             </div>
 
@@ -212,18 +218,19 @@ export function Main (){
             {sentencesDetailedResults&& <div className="details">
                 <h3>Overall Sentiment</h3>
                 <p> The overall sentiment score of the text is {textEvaluation.documentSentimentScore} [range between -1 (very negative) and 1 (very positive)] while the overall magnitude (emotional intensity) of your text is {textEvaluation.documentSentimentMagnitude} [relative to the document&apos;s length]</p>
-                <h3>Sentences that have a particularly high or low sentiment score:</h3>
-                {textEvaluation.sentences.map(sentence=>{
-                    if (sentence.sentenceSentiment<-0.15){
-                        return (<p key={sentence.sentenceId}>The sentence: &quot;<mark className="negative">{sentence.sentenceText} </mark>&quot; --- has a sentinent score of {sentence.sentenceSentiment} and a magnitude score of {sentence.sentenceMagnitude} </p>);
-                    } else if (sentence.sentenceSentiment>0.15){
-                        return (<p key={sentence.sentenceId}>The sentence: &quot;<mark className="positive">{sentence.sentenceText} </mark>&quot; --- has a sentinent score of {sentence.sentenceSentiment} and a magnitude score of {sentence.sentenceMagnitude} </p>);
-                    } else { return; }
-                })}
+                {textEvaluation.sentences.length>0&&<React.Fragment><h3>Sentences that have a particularly high or low sentiment score:</h3>
+                    {textEvaluation.sentences.map(sentence=>{
+                        if (sentence.sentenceSentiment<-0.15){
+                            return (<p key={sentence.sentenceId}>The sentence: &quot;<mark className="negative">{sentence.sentenceText} </mark>&quot; --- has a sentinent score of {sentence.sentenceSentiment} and a magnitude score of {sentence.sentenceMagnitude} </p>);
+                        } else if (sentence.sentenceSentiment>0.15){
+                            return (<p key={sentence.sentenceId}>The sentence: &quot;<mark className="positive">{sentence.sentenceText} </mark>&quot; --- has a sentinent score of {sentence.sentenceSentiment} and a magnitude score of {sentence.sentenceMagnitude} </p>);
+                        } else { return; }
+                    })}
+                </React.Fragment>}
                 <div className="ref" ref={sentencesDetailedResultsRef}></div>
             </div>}
-            {entitiesDetailedResults&& <React.Fragment>
-                <h3> Relevant nouns in the text that have a particularly high or low sentiment score:</h3>
+            {entitiesDetailedResults&&textEvaluation.entitiesAnalysis.length>0&&<div className="details">
+                <h3> Entities in the text that have a particularly high or low sentiment score:</h3>
                 {textEvaluation.entitiesAnalysis&&
                 textEvaluation.entitiesAnalysis.map(entity=>{
                     if (entity.entitySentimentScore>0.1){
@@ -235,7 +242,7 @@ export function Main (){
                 })
                 }
                 <div className="ref" ref={entitiesDetailedResultsRef}></div>
-            </React.Fragment>}
+            </div>}
         </div>
             }
         </div>
