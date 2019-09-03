@@ -1,11 +1,18 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logInId, updateHistory, updateUsername } from "./actions";
+import {
+    logInId,
+    updateHistory,
+    updateUsername,
+    currentValueOfTextArea,
+    deleteEvaluation
+} from "./actions";
 import { Link } from "react-router-dom";
 import instance from "./lib/axios";
 
 export function Header(params) {
     const loggedIn = useSelector(state => state && state.logInId);
+
     const dispatch = useDispatch();
     return (
         <div className="header">
@@ -50,41 +57,40 @@ export function Header(params) {
                                     dispatch(logInId(null));
                                     dispatch(updateHistory(null));
                                     dispatch(updateUsername(null));
+                                    dispatch(currentValueOfTextArea(""));
+                                    dispatch(deleteEvaluation());
+
                                     instance
                                         .get("/logout")
                                         .then(({ data }) => {
                                             if (data.logout) {
-                                                // This function will attempt to remove a cookie from all paths.
-                                                var pathBits = location.pathname.split(
-                                                    "/"
-                                                );
-                                                var pathCurrent = " path=";
-
-                                                // do a simple pathless delete first.
-                                                document.cookie =
-                                                    "session= deleted ; expires=Thu, 01-Jan-1970 00:00:01 GMT;";
-
-                                                for (
-                                                    var i = 0;
-                                                    i < pathBits.length;
-                                                    i++
-                                                ) {
-                                                    pathCurrent +=
-                                                        (pathCurrent.substr(
-                                                            -1
-                                                        ) != "/"
-                                                            ? "/"
-                                                            : "") + pathBits[i];
-                                                    document.cookie =
-                                                        "session= deleted ; expires=Thu, 01-Jan-1970 00:00:01 GMT;" +
-                                                        pathCurrent +
-                                                        ";";
-                                                }
+                                                // // This function will attempt to remove a cookie from all paths.
+                                                // var pathBits = location.pathname.split(
+                                                //     "/"
+                                                // );
+                                                // var pathCurrent = " path=";
+                                                //
+                                                // // do a simple pathless delete first.
+                                                // document.cookie =
+                                                //     "session= deleted ; expires=Thu, 01-Jan-1970 00:00:01 GMT;";
+                                                //
+                                                // for (
+                                                //     var i = 0;
+                                                //     i < pathBits.length;
+                                                //     i++
+                                                // ) {
+                                                //     pathCurrent +=
+                                                //         (pathCurrent.substr(
+                                                //             -1
+                                                //         ) != "/"
+                                                //             ? "/"
+                                                //             : "") + pathBits[i];
+                                                //     document.cookie =
+                                                //         "session= deleted ; expires=Thu, 01-Jan-1970 00:00:01 GMT;" +
+                                                //         pathCurrent +
+                                                //         ";";
+                                                // }
                                             }
-                                            console.log(
-                                                "attempted to delete all cookies: ",
-                                                document.cookie
-                                            );
                                         })
                                         .catch(err =>
                                             console.log(

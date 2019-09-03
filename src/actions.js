@@ -1,64 +1,68 @@
-export function updateText (text){
+export function updateText(text) {
     return {
-        type:"UPDATE_TEXT",
-        text:text
+        type: "UPDATE_TEXT",
+        text: text
     };
 }
-export function updateEvaluation (data){
+export function updateEvaluation(data) {
     return {
-        type:"UPDATE_EVALUATION",
-        data:data
+        type: "UPDATE_EVALUATION",
+        data: data
     };
 }
-export function updateValueOfEvaluation (val){
+export function updateValueOfEvaluation(val) {
     return {
-        type:"UPDATE_VALUE_OF_EVALUATION",
-        val:val
+        type: "UPDATE_VALUE_OF_EVALUATION",
+        val: val
     };
 }
-export function currentValueOfTextArea (val){
+export function deleteEvaluation() {
+    return {
+        type: "DELETE_EVALUATION"
+    };
+}
+export function currentValueOfTextArea(val) {
     return {
         type: "CURRENT_VALUE_OF_TEXTAREA",
-        val:val
+        val: val
     };
 }
-export function updateHighlightedText (string){
+export function updateHighlightedText(string) {
     return {
         type: "UPDATE_HIGHLIGHTED_TEXT",
-        text:string
+        text: string
     };
 }
-export function updateRephrasing (id, arr){
+export function updateRephrasing(id, arr) {
     return {
-        type:"UPDATE_REPHRASING",
-        sentences:arr,
+        type: "UPDATE_REPHRASING",
+        sentences: arr,
         id: id
     };
 }
 
-export function logInId (int){
+export function logInId(int) {
     return {
-        type:"LOGIN_ID",
-        id:int
+        type: "LOGIN_ID",
+        id: int
     };
 }
 
-
-export function updateLogInId (int){
+export function updateLogInId(int) {
     return {
-        type:"UPDATE_LOGIN_ID",
-        id:int
+        type: "UPDATE_LOGIN_ID",
+        id: int
     };
 }
-export function updateUsername (str){
+export function updateUsername(str) {
     return {
-        type:"UPDATE_USERNAME",
-        username:str
+        type: "UPDATE_USERNAME",
+        username: str
     };
 }
-export function updateHistory (arr){
+export function updateHistory(arr) {
     return {
-        type:"UPDATE_HISTORY",
-        history:arr
+        type: "UPDATE_HISTORY",
+        history: arr
     };
 }

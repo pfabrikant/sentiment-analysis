@@ -106,7 +106,7 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
     let idInQuestion;
-    console.log(req.body.username);
+
     db.getPassword(req.body.username)
         .then(({ rows }) => {
             idInQuestion = rows[0].id;
@@ -124,8 +124,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    req.session = null;
-    console.log("cleared cookies on back-end: ", req.session);
+    req.session.loginId = null;
     res.json({ logout: true });
 });
 app.get("/id", (req, res) => {
@@ -134,8 +133,8 @@ app.get("/id", (req, res) => {
     }
 });
 
-app.get("/getHistory/:id", (req, res) => {
-    db.getHistory(req.params.id)
+app.get("/getHistory", (req, res) => {
+    db.getHistory(req.session.loginId)
         .then(({ rows }) => {
             res.json(rows);
         })
