@@ -1,5 +1,6 @@
-var bcrypt = require('bcryptjs');
+var bcrypt = require("bcryptjs");
 
+// creates an encrypted hash from user's password
 exports.getHash = function(plainTextPassword) {
     return new Promise(function(resolve, reject) {
         bcrypt.genSalt(function(err, salt) {
@@ -16,14 +17,22 @@ exports.getHash = function(plainTextPassword) {
     });
 };
 
-exports.compareHash = function(textEnteredInLoginForm, hashedPasswordFromDatabase) {
+// compares typed password to the hashed password that is stored in the database
+exports.compareHash = function(
+    textEnteredInLoginForm,
+    hashedPasswordFromDatabase
+) {
     return new Promise(function(resolve, reject) {
-        bcrypt.compare(textEnteredInLoginForm, hashedPasswordFromDatabase, function(err, doesMatch) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(doesMatch);
+        bcrypt.compare(
+            textEnteredInLoginForm,
+            hashedPasswordFromDatabase,
+            function(err, doesMatch) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(doesMatch);
+                }
             }
-        });
+        );
     });
 };

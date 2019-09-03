@@ -20,6 +20,7 @@
         "no-unexpected-multiline": 0,
         "no-unsafe-finally": 0,
         "react/prop-types": 0,
-        "react/display-name": 0
+        "react/display-name": 0,
+        "array-bracket-newline": ["error", "never"]
     }
 }

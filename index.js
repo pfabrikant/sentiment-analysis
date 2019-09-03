@@ -17,6 +17,7 @@ const { rephraseSentence } = require("./src/lib/rephraser");
 const sanitizeHtml = require("sanitize-html");
 const cookieParser = require("cookie-parser");
 const csurf = require("csurf");
+
 app.use(cookieParser());
 app.use(cookieSessionMiddleware);
 app.use(bodyParser.json());
@@ -38,6 +39,7 @@ if (process.env.NODE_ENV != "production") {
 } else {
     app.use("/bundle.js", (req, res) => res.sendFile(`${__dirname}/bundle.js`));
 }
+
 app.use("/public/:fileName", (req, res) => {
     res.sendFile(__dirname + "/public/" + req.params.fileName);
 });
@@ -70,6 +72,7 @@ app.post("/submitText", (req, res) => {
         })
         .catch(err => console.log("Error in POST /submitText: ", err.message));
 });
+
 app.post("/getRephrasing", (req, res) => {
     rephraseSentence(req.body.text)
         .then(results => {
@@ -106,7 +109,6 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
     let idInQuestion;
-
     db.getPassword(req.body.username)
         .then(({ rows }) => {
             idInQuestion = rows[0].id;

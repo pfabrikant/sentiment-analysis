@@ -12,8 +12,8 @@ import instance from "./lib/axios";
 
 export function Header(params) {
     const loggedIn = useSelector(state => state && state.logInId);
-
     const dispatch = useDispatch();
+
     return (
         <div className="header">
             <Link to="/">
@@ -59,37 +59,13 @@ export function Header(params) {
                                     dispatch(updateUsername(null));
                                     dispatch(currentValueOfTextArea(""));
                                     dispatch(deleteEvaluation());
-
                                     instance
                                         .get("/logout")
                                         .then(({ data }) => {
                                             if (data.logout) {
-                                                // // This function will attempt to remove a cookie from all paths.
-                                                // var pathBits = location.pathname.split(
-                                                //     "/"
-                                                // );
-                                                // var pathCurrent = " path=";
-                                                //
-                                                // // do a simple pathless delete first.
-                                                // document.cookie =
-                                                //     "session= deleted ; expires=Thu, 01-Jan-1970 00:00:01 GMT;";
-                                                //
-                                                // for (
-                                                //     var i = 0;
-                                                //     i < pathBits.length;
-                                                //     i++
-                                                // ) {
-                                                //     pathCurrent +=
-                                                //         (pathCurrent.substr(
-                                                //             -1
-                                                //         ) != "/"
-                                                //             ? "/"
-                                                //             : "") + pathBits[i];
-                                                //     document.cookie =
-                                                //         "session= deleted ; expires=Thu, 01-Jan-1970 00:00:01 GMT;" +
-                                                //         pathCurrent +
-                                                //         ";";
-                                                // }
+                                                console.log(
+                                                    "user logged out on server side"
+                                                );
                                             }
                                         })
                                         .catch(err =>
